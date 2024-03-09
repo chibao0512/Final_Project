@@ -5,7 +5,12 @@ using Final_Project.Repos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Final_Project.Controllers;
 using System.Text;
+using Final_Project.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+using Final_Project.States;
+using Final_Project.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,12 +41,16 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audiece"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
 
     };
 });
-builder.Services.AddScoped<Account>();
+builder.Services.AddScoped<IAccount,Account>();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://ocalhost:5153/") });
+
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,5 +79,8 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Final_Project.Client._Imports).Assembly);
+app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

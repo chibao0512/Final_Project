@@ -1,5 +1,6 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using Final_Project.Services
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
@@ -9,3 +10,16 @@
 @using Final_Project
 @using Final_Project.Client
 @using Final_Project.Components
+
+@using Final_Project.DTOs
+@using Final_Project.Repos
+@using Final_Project.Services
+@using Final_Project.Responses
+@using Final_Project.States
+@using Microsoft.AspNetCore.Components.Authorization
+@using static Final_Project.Responses.CustomResponses
+
+@inject IAccountService accountService
+@inject IJSRuntime js
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthStateProvider
